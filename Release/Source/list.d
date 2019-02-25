@@ -1,0 +1,25 @@
+Source/list.o: ../Source/list.c \
+ C:\eclipse-workspace\CG2271_Project\Source\include/FreeRTOS.h \
+ C:\eclipse-workspace\CG2271_Project/FreeRTOSConfig.h \
+ C:\eclipse-workspace\CG2271_Project\Source\include/projdefs.h \
+ C:\eclipse-workspace\CG2271_Project\Source\include/portable.h \
+ C:\eclipse-workspace\CG2271_Project\Source\include/deprecated_definitions.h \
+ C:\eclipse-workspace\CG2271_Project\Source\portable\GCC\ATMega323/portmacro.h \
+ C:\eclipse-workspace\CG2271_Project\Source\include/mpu_wrappers.h \
+ C:\eclipse-workspace\CG2271_Project\Source\include/list.h
+
+C:\eclipse-workspace\CG2271_Project\Source\include/FreeRTOS.h:
+
+C:\eclipse-workspace\CG2271_Project/FreeRTOSConfig.h:
+
+C:\eclipse-workspace\CG2271_Project\Source\include/projdefs.h:
+
+C:\eclipse-workspace\CG2271_Project\Source\include/portable.h:
+
+C:\eclipse-workspace\CG2271_Project\Source\include/deprecated_definitions.h:
+
+C:\eclipse-workspace\CG2271_Project\Source\portable\GCC\ATMega323/portmacro.h:
+
+C:\eclipse-workspace\CG2271_Project\Source\include/mpu_wrappers.h:
+
+C:\eclipse-workspace\CG2271_Project\Source\include/list.h:
