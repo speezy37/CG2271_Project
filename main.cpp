@@ -4,19 +4,10 @@
  *  Created on: 25 Feb 2019
  *  Author: ChuaCY
  */
-
-#include <Arduino.h>
-#include "FreeRTOS.h"
-#include "task.h"
-#include "croutine.h"
-
-void TaskLED(void *pvParameters);
-void TaskSerial(void *pvParameters);
-void TaskMotor(void *pvParameters);
-void TaskAudio(void *pvParameters);
+#include "main.h"
 
 void setup() {
-	xTaskCreate(TaskLED, (const portCHAR*) "LED", 256, NULL, 3, NULL);
+	xTaskCreate(TaskRedLED, "LED", STACK_SIZE, NULL, 1, NULL);
 	vTaskStartScheduler();
 }
 
@@ -24,45 +15,47 @@ void loop() {
 
 }
 
-void TaskLED(void *pvParameters)  // This is a task.
+void TaskRedLED(void *p)  // This is a task.
 {
-  (void) pvParameters;
-
-  pinMode(13, OUTPUT);
+  pinMode(PIN_REDLED, OUTPUT);
+  TickType_t xLastWakeTime = xTaskGetTickCount();
+  TickType_t period;
 
   while(1)
   {
-    digitalWrite(13, HIGH);
-    vTaskDelay( 1000 / portTICK_PERIOD_MS );
-    digitalWrite(13, LOW);
-    vTaskDelay( 1000 / portTICK_PERIOD_MS );
+
+	if(moveState == Stationary) {
+		period = 250;
+	}
+	else {
+		period = 500;
+	}
+
+    digitalWrite(PIN_REDLED, HIGH);
+    vTaskDelayUntil(&xLastWakeTime, period );
+    digitalWrite(PIN_REDLED, LOW);
+    vTaskDelayUntil(&xLastWakeTime, period );
   }
 }
 
-void TaskSerial(void *pvParameters)
+void TaskSerial(void *p)
 {
-	(void) pvParameters;
-
 	while(1)
 	{
 
 	}
 }
 
-void TaskMotor(void *pvParameters)
+void TaskMotor(void *p)
 {
-	(void) pvParameters;
-
 	while(1)
 	{
 
 	}
 }
 
-void TaskAudio(void *pvParameters)
+void TaskAudio(void *p)
 {
-	(void) pvParameters;
-
 	while(1)
 	{
 

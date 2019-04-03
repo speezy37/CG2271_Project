@@ -9,9 +9,6 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include arduino/subdir.mk
--include Source/portable/MemMang/subdir.mk
--include Source/portable/GCC/ATMega323/subdir.mk
--include Source/subdir.mk
 -include subdir.mk
 -include objects.mk
 
