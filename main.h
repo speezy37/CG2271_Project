@@ -39,11 +39,11 @@
 #define PIN_RX	0
 #define PIN_TX	1
 
-enum state {Forward, Reverse, Left, Right, Stationary};
-state moveState = Stationary;
+enum state {Forward, Reverse, Left, Right, Idle};
+state moveState = Idle;
 
 void TaskRedLED(void *p);
-void TaskGreen(void *p);
+void TaskGreenLED(void *p);
 void TaskSerial(void *p);
 void TaskMotor(void *p);
 void TaskAudio(void *p);
