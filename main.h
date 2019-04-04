@@ -33,17 +33,29 @@
 #define PIN_MOTORBL	6
 
 // Buzzer
-#define PIN_AUDIO	3
+#define PIN_AUDIO   3
 
 // Serial
 #define PIN_RX	0
 #define PIN_TX	1
 
+// Bluetooth
+#define BT_CONNECTED 'c'
+#define OFF 'f'
+#define BABY_SHARK 'b'
+#define EMPTY 'e'
+#define LEFT 'L'
+#define RIGHT 'R'
+#define FORWARD 'F'
+#define BACKWARD 'B'
+
+char blueToothVal; //value sent over via BT
+
 enum state {Forward, Reverse, Left, Right, Stationary};
 state moveState = Stationary;
 
 void TaskRedLED(void *p);
-void TaskGreen(void *p);
+void TaskGreenLED(void *p);
 void TaskSerial(void *p);
 void TaskMotor(void *p);
 void TaskAudio(void *p);
