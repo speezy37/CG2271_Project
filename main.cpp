@@ -224,7 +224,6 @@ void tAudio(void *p) {
 		392, 392, 370};
 
 	while(1) {
-		//if (blueToothVal == CMD_CONNECTED){
 		if (btState == Connected) {
 			if (moveState == Start) {
 				for(int i = 0; i < 3; i++){
@@ -232,7 +231,6 @@ void tAudio(void *p) {
 					vTaskDelayUntil(&xLastWakeTime, 300);
 					noTone(PIN_AUDIO);
 					vTaskDelayUntil(&xLastWakeTime, 100);
-					//blueToothVal = CMD_EMPTY;
 					moveState = Idle;
 				}
 			}
@@ -245,25 +243,14 @@ void tAudio(void *p) {
 					btState = Disconnected;
 				}
 			}
-			//else if (blueToothVal == CMD_SONG){
 			else {
-				//while (blueToothVal != CMD_OFF){
-				while(1) {
-					for(int i = 0; i < 30; i++) {
-						tone(PIN_AUDIO, babyShark[i]);
-						vTaskDelayUntil(&xLastWakeTime, 35);
-						noTone(PIN_AUDIO);
-						vTaskDelayUntil(&xLastWakeTime, 15);
-					}
-					vTaskDelayUntil(&xLastWakeTime, 500);
-				}
-
-				/* for(int i = 0; i < 3; i++){
-					tone(PIN_AUDIO, specialTuneEnd[i]);
-					vTaskDelayUntil(&xLastWakeTime, 300);
+				for(int i = 0; i < 30; i++) {
+					tone(PIN_AUDIO, babyShark[i]);
+					vTaskDelayUntil(&xLastWakeTime, 35);
 					noTone(PIN_AUDIO);
-					vTaskDelayUntil(&xLastWakeTime, 100);
-				}*/
+					vTaskDelayUntil(&xLastWakeTime, 15);
+				}
+				vTaskDelayUntil(&xLastWakeTime, 500);
 			}
 		}
 	}
