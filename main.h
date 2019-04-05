@@ -12,6 +12,7 @@
 #include <avr/io.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include <semphr.h>
 
 #define STACK_SIZE 200
 
@@ -60,10 +61,12 @@
 #define PEIROD_SONG			50
 
 enum state {Forward, Reverse, Left, Right, Idle, End, Start};
-state moveState = Idle;
+state moveState = End;
 
 enum bluetooth {Disconnected, Connected};
 bluetooth btState = Disconnected;
+
+SemaphoreHandle_t xSemaphore;
 
 void initPins(void);
 void tRedLED(void *p);

@@ -10,9 +10,9 @@
 void setup() {
 	initPins();
 	Serial.begin(9600);
-	//xTaskCreate(tRedLED, "Red LED", STACK_SIZE, NULL, 1, NULL);
-	//xTaskCreate(tGreenLED, "Green LED", STACK_SIZE, NULL, 1, NULL);
-	//xTaskCreate(tAudio, "Audio", STACK_SIZE, NULL, 3, NULL);
+	xTaskCreate(tRedLED, "Red LED", STACK_SIZE, NULL, 1, NULL);
+	xTaskCreate(tGreenLED, "Green LED", STACK_SIZE, NULL, 1, NULL);
+	xTaskCreate(tAudio, "Audio", STACK_SIZE, NULL, 3, NULL);
 	xTaskCreate(tSerial, "Serial", STACK_SIZE, NULL, 4, NULL);
 	xTaskCreate(tMotorControl, "Motor Control", STACK_SIZE, NULL, 2, NULL);
 	vTaskStartScheduler();
@@ -146,12 +146,11 @@ void tSerial(void *p) {
 	TickType_t xLastWakeTime = 0;
 	while(1) {
         if (Serial.available()) {	//if there is data being received
-        	/*if((btState == Disconnected) && (moveState == End)) {
+        	if((btState == Disconnected) && (moveState == End)) {
         		btState = Connected;
-        	}*/
-			char blueToothVal = Serial.read();
-
-			switch(blueToothVal) {
+        	}
+			char val = Serial.read();
+			switch(val) {
 			case CMD_CONNECTED:
 				btState = Connected;
 				moveState = Start;
@@ -178,7 +177,7 @@ void tSerial(void *p) {
 			default:
 				moveState = Idle;
 			}
-		}
+        }
         vTaskDelayUntil(&xLastWakeTime, 50);
 	}
 }
@@ -251,7 +250,7 @@ void tAudio(void *p) {
 		392, 392, 370};
 
 	while(1) {
-		if (btState == Connected) {
+		/*if (btState == Connected) {
 			if (moveState == Start) {
 				for(int i = 0; i < 3; i++){
 					tone(PIN_AUDIO, specialTuneBT[i]);
@@ -270,16 +269,16 @@ void tAudio(void *p) {
 					btState = Disconnected;
 				}
 			}
-			else {
+			else {*/
 				for(int i = 0; i < 30; i++) {
 					tone(PIN_AUDIO, babyShark[i]);
-					vTaskDelayUntil(&xLastWakeTime, 70);
+					vTaskDelayUntil(&xLastWakeTime, 140);
 					noTone(PIN_AUDIO);
-					vTaskDelayUntil(&xLastWakeTime, 30);
+					vTaskDelayUntil(&xLastWakeTime, 60);
 				}
 				vTaskDelayUntil(&xLastWakeTime, 400);
-			}
-		}
+			//}
+		//}
 	}
 }
 
