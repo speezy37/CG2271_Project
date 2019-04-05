@@ -47,7 +47,6 @@
 #define CMD_CONNECTED 'c'
 #define CMD_OFF 'f'
 #define CMD_SONG 'b'
-#define CMD_EMPTY 'e'
 #define CMD_LEFT 'L'
 #define CMD_RIGHT 'R'
 #define CMD_FORWARD 'F'
@@ -60,13 +59,8 @@
 #define PERIOD_LED_RUNNING	100
 #define PEIROD_SONG			50
 
-enum state {Forward, Reverse, Left, Right, Idle, End, Start};
-state moveState = End;
-
-enum bluetooth {Disconnected, Connected};
-bluetooth btState = Disconnected;
-
-SemaphoreHandle_t xSemaphore;
+enum state {Start, Connect, Idle, Forward, Reverse, Left, Right, Disconnect, End};
+state moveState = Start;
 
 void initPins(void);
 void tRedLED(void *p);
