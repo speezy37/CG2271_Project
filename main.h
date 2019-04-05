@@ -27,12 +27,12 @@
 #define PIN_GLED8	5
 
 // Motor
-#define PIN_MOTORFRP	13
-#define PIN_MOTORFRN	12
-#define PIN_MOTORFLP	11
-#define PIN_MOTORFLN	10
-#define PIN_MOTORBRP	9
-#define PIN_MOTORBRN	8
+#define PIN_MOTORFRP	10
+#define PIN_MOTORFRN	11
+#define PIN_MOTORFLP	12
+#define PIN_MOTORFLN	13
+#define PIN_MOTORBRP	8
+#define PIN_MOTORBRN	9
 #define PIN_MOTORBLP	7
 #define PIN_MOTORBLN	6
 
@@ -59,10 +59,8 @@
 #define PERIOD_LED_RUNNING	100
 #define PEIROD_SONG			50
 
-char blueToothVal; //value sent over via BT
-
 enum state {Forward, Reverse, Left, Right, Idle, End, Start};
-state moveState = End;
+state moveState = Idle;
 
 enum bluetooth {Disconnected, Connected};
 bluetooth btState = Disconnected;

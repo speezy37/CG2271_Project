@@ -10,11 +10,11 @@
 void setup() {
 	initPins();
 	Serial.begin(9600);
-	xTaskCreate(tRedLED, "Red LED", STACK_SIZE, NULL, 1, NULL);
-	xTaskCreate(tGreenLED, "Green LED", STACK_SIZE, NULL, 1, NULL);
-	//xTaskCreate(tAudio, "Audio", STACK_SIZE, NULL, 2, NULL);
-	xTaskCreate(tSerial, "Serial", STACK_SIZE, NULL, 1, NULL);
-	//xTaskCreate(tMotorCOntrol, "Motor Control", STACK_SIZE, NULL, 2, NULL);
+	//xTaskCreate(tRedLED, "Red LED", STACK_SIZE, NULL, 1, NULL);
+	//xTaskCreate(tGreenLED, "Green LED", STACK_SIZE, NULL, 1, NULL);
+	//xTaskCreate(tAudio, "Audio", STACK_SIZE, NULL, 3, NULL);
+	xTaskCreate(tSerial, "Serial", STACK_SIZE, NULL, 4, NULL);
+	xTaskCreate(tMotorControl, "Motor Control", STACK_SIZE, NULL, 2, NULL);
 	vTaskStartScheduler();
 }
 
@@ -70,61 +70,86 @@ void tRedLED(void *p) {
 void tGreenLED(void *p) {
 	TickType_t xLastWakeTime = 0;
 
-	while(1) {
-		if(moveState == Idle) {
-			digitalWrite(PIN_GLED1, HIGH);
-			digitalWrite(PIN_GLED1, HIGH);
-			digitalWrite(PIN_GLED1, HIGH);
-			digitalWrite(PIN_GLED1, HIGH);
-			digitalWrite(PIN_GLED1, HIGH);
-			digitalWrite(PIN_GLED1, HIGH);
-			digitalWrite(PIN_GLED1, HIGH);
-			digitalWrite(PIN_GLED1, HIGH);
+	while (1) {
+		if (moveState == Idle) {
+			digitalWrite(PIN_GLED1, LOW);
+			digitalWrite(PIN_GLED2, LOW);
+			digitalWrite(PIN_GLED3, LOW);
+			digitalWrite(PIN_GLED4, LOW);
+			digitalWrite(PIN_GLED5, LOW);
+			digitalWrite(PIN_GLED6, LOW);
+			digitalWrite(PIN_GLED7, LOW);
+			digitalWrite(PIN_GLED8, LOW);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 		}
+		else if (moveState == Start) {
+			for (int i=0; i<2; i++) {
+				digitalWrite(PIN_GLED1, LOW);
+				digitalWrite(PIN_GLED2, LOW);
+				digitalWrite(PIN_GLED3, LOW);
+				digitalWrite(PIN_GLED4, LOW);
+				digitalWrite(PIN_GLED5, LOW);
+				digitalWrite(PIN_GLED6, LOW);
+				digitalWrite(PIN_GLED7, LOW);
+				digitalWrite(PIN_GLED8, LOW);
+				vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_SLOW);
+
+				digitalWrite(PIN_GLED1, HIGH);
+				digitalWrite(PIN_GLED2, HIGH);
+				digitalWrite(PIN_GLED3, HIGH);
+				digitalWrite(PIN_GLED4, HIGH);
+				digitalWrite(PIN_GLED5, HIGH);
+				digitalWrite(PIN_GLED6, HIGH);
+				digitalWrite(PIN_GLED7, HIGH);
+				digitalWrite(PIN_GLED8, HIGH);
+				vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_SLOW);
+
+			}
+		}
 		else {
-			digitalWrite(PIN_GLED8, LOW);
-			digitalWrite(PIN_GLED1, HIGH);
-			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
-
-			digitalWrite(PIN_GLED1, LOW);
-			digitalWrite(PIN_GLED2, HIGH);
-			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
-
-			digitalWrite(PIN_GLED2, LOW);
-			digitalWrite(PIN_GLED3, HIGH);
-			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
-
-			digitalWrite(PIN_GLED3, LOW);
-			digitalWrite(PIN_GLED4, HIGH);
-			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
-
-			digitalWrite(PIN_GLED4, LOW);
-			digitalWrite(PIN_GLED5, HIGH);
-			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
-
-			digitalWrite(PIN_GLED5, LOW);
-			digitalWrite(PIN_GLED6, HIGH);
-			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
-
-			digitalWrite(PIN_GLED6, LOW);
-			digitalWrite(PIN_GLED7, HIGH);
-			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
-
-			digitalWrite(PIN_GLED7, LOW);
 			digitalWrite(PIN_GLED8, HIGH);
+			digitalWrite(PIN_GLED1, LOW);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+
+			digitalWrite(PIN_GLED1, HIGH);
+			digitalWrite(PIN_GLED2, LOW);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+
+			digitalWrite(PIN_GLED2, HIGH);
+			digitalWrite(PIN_GLED3, LOW);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+
+			digitalWrite(PIN_GLED3, HIGH);
+			digitalWrite(PIN_GLED4, LOW);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+
+			digitalWrite(PIN_GLED4, HIGH);
+			digitalWrite(PIN_GLED5, LOW);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+
+			digitalWrite(PIN_GLED5, HIGH);
+			digitalWrite(PIN_GLED6, LOW);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+
+			digitalWrite(PIN_GLED6, HIGH);
+			digitalWrite(PIN_GLED7, LOW);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, LOW);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 		}
 	}
 }
 
 void tSerial(void *p) {
+	TickType_t xLastWakeTime = 0;
 	while(1) {
         if (Serial.available()) {	//if there is data being received
-        	if((btState == Disconnected) && (moveState == Stop)) {
+        	/*if((btState == Disconnected) && (moveState == End)) {
         		btState = Connected;
-        	}
-			blueToothVal = Serial.read();
+        	}*/
+			char blueToothVal = Serial.read();
 
 			switch(blueToothVal) {
 			case CMD_CONNECTED:
@@ -154,11 +179,12 @@ void tSerial(void *p) {
 				moveState = Idle;
 			}
 		}
+        vTaskDelayUntil(&xLastWakeTime, 50);
 	}
 }
 
 void tMotorControl(void *p) {
-
+	TickType_t xLastWakeTime = 0;
 	while(1) {
 		switch(moveState) {
 		case Forward:
@@ -211,6 +237,7 @@ void tMotorControl(void *p) {
 			digitalWrite(PIN_MOTORBLP, LOW);
 			digitalWrite(PIN_MOTORBLN, LOW);
 		}
+		vTaskDelayUntil(&xLastWakeTime, 50);
 	}
 }
 void tAudio(void *p) {
@@ -246,11 +273,11 @@ void tAudio(void *p) {
 			else {
 				for(int i = 0; i < 30; i++) {
 					tone(PIN_AUDIO, babyShark[i]);
-					vTaskDelayUntil(&xLastWakeTime, 35);
+					vTaskDelayUntil(&xLastWakeTime, 70);
 					noTone(PIN_AUDIO);
-					vTaskDelayUntil(&xLastWakeTime, 15);
+					vTaskDelayUntil(&xLastWakeTime, 30);
 				}
-				vTaskDelayUntil(&xLastWakeTime, 500);
+				vTaskDelayUntil(&xLastWakeTime, 400);
 			}
 		}
 	}
