@@ -59,14 +59,8 @@
 #define PERIOD_LED_RUNNING	100
 #define PEIROD_SONG			50
 
-enum state {Forward, Reverse, Left, Right, Idle, End, Start, Connect};
-state moveState = End;
-int songState = 0;
-
-enum bluetooth {Disconnected, Connected};
-bluetooth btState = Disconnected;
-
-SemaphoreHandle_t xSemaphore;
+enum state {Start, Connect, Idle, Forward, Reverse, Left, Right, Disconnect, End};
+state moveState = Start;
 
 void initPins(void);
 void tRedLED(void *p);

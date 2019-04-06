@@ -39,6 +39,16 @@ void initPins() {
 	pinMode(PIN_GLED7, OUTPUT);
 	pinMode(PIN_GLED8, OUTPUT);
 
+	digitalWrite(PIN_RLED, HIGH);
+	digitalWrite(PIN_GLED1, HIGH);
+	digitalWrite(PIN_GLED2, HIGH);
+	digitalWrite(PIN_GLED3, HIGH);
+	digitalWrite(PIN_GLED4, HIGH);
+	digitalWrite(PIN_GLED5, HIGH);
+	digitalWrite(PIN_GLED6, HIGH);
+	digitalWrite(PIN_GLED7, HIGH);
+	digitalWrite(PIN_GLED8, HIGH);
+
 	// Motor
 	pinMode(PIN_MOTORFRP, OUTPUT);
 	pinMode(PIN_MOTORFRN, OUTPUT);
@@ -58,25 +68,42 @@ void tRedLED(void *p) {
 	TickType_t period;
 
 	while(1) {
-		if(moveState == Idle) {
-			period = PERIOD_LED_SLOW;
+		if ((moveState == Start) || (moveState == End) || (moveState == Connect) || (moveState == Disconnect)) {
+			digitalWrite(PIN_RLED, HIGH);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 		}
 		else {
-			period = PERIOD_LED_FAST;
-		}
+			if (moveState == Idle) {
+				period = PERIOD_LED_SLOW;
+			}
+			else {
+				period = PERIOD_LED_FAST;
+			}
 
-		digitalWrite(PIN_RLED, HIGH);
-		vTaskDelayUntil(&xLastWakeTime, period );
-		digitalWrite(PIN_RLED, LOW);
-		vTaskDelayUntil(&xLastWakeTime, period );
+			digitalWrite(PIN_RLED, HIGH);
+			vTaskDelayUntil(&xLastWakeTime, period);
+			digitalWrite(PIN_RLED, LOW);
+			vTaskDelayUntil(&xLastWakeTime, period);
+		}
 	}
 }
 
 void tGreenLED(void *p) {
-	TickType_t xLastWakeTime = 0;
+	TickType_t xLastWakeTime = xTaskGetTickCount();
 
 	while (1) {
-		if (moveState == Idle) {
+		if((moveState == Start) || (moveState == Disconnect) || (moveState == End)) {
+			digitalWrite(PIN_GLED1, HIGH);
+			digitalWrite(PIN_GLED2, HIGH);
+			digitalWrite(PIN_GLED3, HIGH);
+			digitalWrite(PIN_GLED4, HIGH);
+			digitalWrite(PIN_GLED5, HIGH);
+			digitalWrite(PIN_GLED6, HIGH);
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, HIGH);
+			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
+		}
+		else if (moveState == Idle) {
 			digitalWrite(PIN_GLED1, LOW);
 			digitalWrite(PIN_GLED2, LOW);
 			digitalWrite(PIN_GLED3, LOW);
@@ -87,7 +114,7 @@ void tGreenLED(void *p) {
 			digitalWrite(PIN_GLED8, LOW);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 		}
-		else if (moveState == Start) {
+		else if (moveState == Connect) {
 			for (int i=0; i<2; i++) {
 				digitalWrite(PIN_GLED1, LOW);
 				digitalWrite(PIN_GLED2, LOW);
@@ -109,36 +136,85 @@ void tGreenLED(void *p) {
 				digitalWrite(PIN_GLED8, HIGH);
 				vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_SLOW);
 			}
+			moveState = Idle;
 		}
 		else {
-			digitalWrite(PIN_GLED8, HIGH);
 			digitalWrite(PIN_GLED1, LOW);
+			digitalWrite(PIN_GLED2, HIGH);
+			digitalWrite(PIN_GLED3, HIGH);
+			digitalWrite(PIN_GLED4, HIGH);
+			digitalWrite(PIN_GLED5, HIGH);
+			digitalWrite(PIN_GLED6, HIGH);
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 
 			digitalWrite(PIN_GLED1, HIGH);
 			digitalWrite(PIN_GLED2, LOW);
+			digitalWrite(PIN_GLED3, HIGH);
+			digitalWrite(PIN_GLED4, HIGH);
+			digitalWrite(PIN_GLED5, HIGH);
+			digitalWrite(PIN_GLED6, HIGH);
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 
+			digitalWrite(PIN_GLED1, HIGH);
 			digitalWrite(PIN_GLED2, HIGH);
 			digitalWrite(PIN_GLED3, LOW);
+			digitalWrite(PIN_GLED4, HIGH);
+			digitalWrite(PIN_GLED5, HIGH);
+			digitalWrite(PIN_GLED6, HIGH);
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 
+			digitalWrite(PIN_GLED1, HIGH);
+			digitalWrite(PIN_GLED2, HIGH);
 			digitalWrite(PIN_GLED3, HIGH);
 			digitalWrite(PIN_GLED4, LOW);
+			digitalWrite(PIN_GLED5, HIGH);
+			digitalWrite(PIN_GLED6, HIGH);
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 
+			digitalWrite(PIN_GLED1, HIGH);
+			digitalWrite(PIN_GLED2, HIGH);
+			digitalWrite(PIN_GLED3, HIGH);
 			digitalWrite(PIN_GLED4, HIGH);
 			digitalWrite(PIN_GLED5, LOW);
+			digitalWrite(PIN_GLED6, HIGH);
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 
+			digitalWrite(PIN_GLED1, HIGH);
+			digitalWrite(PIN_GLED2, HIGH);
+			digitalWrite(PIN_GLED3, HIGH);
+			digitalWrite(PIN_GLED4, HIGH);
 			digitalWrite(PIN_GLED5, HIGH);
 			digitalWrite(PIN_GLED6, LOW);
+			digitalWrite(PIN_GLED7, HIGH);
+			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 
+			digitalWrite(PIN_GLED1, HIGH);
+			digitalWrite(PIN_GLED2, HIGH);
+			digitalWrite(PIN_GLED3, HIGH);
+			digitalWrite(PIN_GLED4, HIGH);
+			digitalWrite(PIN_GLED5, HIGH);
 			digitalWrite(PIN_GLED6, HIGH);
 			digitalWrite(PIN_GLED7, LOW);
+			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 
+			digitalWrite(PIN_GLED1, HIGH);
+			digitalWrite(PIN_GLED2, HIGH);
+			digitalWrite(PIN_GLED3, HIGH);
+			digitalWrite(PIN_GLED4, HIGH);
+			digitalWrite(PIN_GLED5, HIGH);
+			digitalWrite(PIN_GLED6, HIGH);
 			digitalWrite(PIN_GLED7, HIGH);
 			digitalWrite(PIN_GLED8, LOW);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
@@ -156,10 +232,9 @@ void tSerial(void *p) {
 				moveState = Connect;
 				break;
 			case CMD_OFF:
-				moveState = End;
+				moveState = Disconnect;
 				break;
 			case CMD_SONG:
-			    moveState = Start;
 				break;
 			case CMD_FORWARD:
 				moveState = Forward;
@@ -173,8 +248,9 @@ void tSerial(void *p) {
 			case CMD_RIGHT:
 				moveState = Right;
 				break;
-			default:
+			case CMD_STOP:
 				moveState = Idle;
+				break;
 			}
         }
         vTaskDelayUntil(&xLastWakeTime, 50);
@@ -238,8 +314,9 @@ void tMotorControl(void *p) {
 		vTaskDelayUntil(&xLastWakeTime, 50);
 	}
 }
+
 void tAudio(void *p) {
-	TickType_t xLastWakeTime = 0;
+	TickType_t xLastWakeTime = xTaskGetTickCount();
     int specialTuneBT[3] = {261, 294, 330};
 	int specialTuneEnd[3] = {330, 294, 261};
 	int babyShark[30] = {
@@ -249,35 +326,34 @@ void tAudio(void *p) {
 		392, 392, 370};
 
 	while(1) {
-        if (moveState == Connect){
-            for(int i = 0; i < 3; i++){
-                tone(PIN_AUDIO, specialTuneBT[i]);
-                vTaskDelayUntil(&xLastWakeTime, 300);
-                noTone(PIN_AUDIO);
-                vTaskDelayUntil(&xLastWakeTime, 100);
-            }
-        }
-        else if (moveState == End){
-            for(int i = 0; i < 3; i++){
-                tone(PIN_AUDIO, specialTuneEnd[i]);
-                vTaskDelayUntil(&xLastWakeTime, 300);
-                noTone(PIN_AUDIO);
-                vTaskDelayUntil(&xLastWakeTime, 100);
-            }
-            songState = 0;
-        }
-        else if (moveState == Start || songState == 1){
-            if (songState == 0){
-                songState = 1;
-            }
-            for(int i = 0; i < 30; i++) {
-                tone(PIN_AUDIO, babyShark[i]);
-                vTaskDelayUntil(&xLastWakeTime, 140);
-                noTone(PIN_AUDIO);
-                vTaskDelayUntil(&xLastWakeTime, 60);
-            }
-        }
-        vTaskDelayUntil(&xLastWakeTime, 400);
+		if (moveState == Connect) {
+			tone(PIN_AUDIO, 2637);
+			vTaskDelayUntil(&xLastWakeTime, 150);
+			noTone(PIN_AUDIO);
+			vTaskDelayUntil(&xLastWakeTime, 300);
+		}
+		else if (moveState == Disconnect) {
+			for(int i=0; i<3; i++) {
+				tone(PIN_AUDIO, 2637);
+				vTaskDelayUntil(&xLastWakeTime, 150);
+				noTone(PIN_AUDIO);
+				vTaskDelayUntil(&xLastWakeTime, 350);
+			}
+			moveState = End;
+		}
+		else if ((moveState != Start) && (moveState != End)) {
+			for(int i = 0; i < 30; i++) {
+				if ((moveState == Connect) || (moveState == Disconnect)) {
+					break;
+				}
+				tone(PIN_AUDIO, babyShark[i]);
+				vTaskDelayUntil(&xLastWakeTime, 175);
+				noTone(PIN_AUDIO);
+				vTaskDelayUntil(&xLastWakeTime, 75);
+			}
+			vTaskDelayUntil(&xLastWakeTime, 350);
+		}
+		vTaskDelayUntil(&xLastWakeTime, 50);
 	}
 }
 
