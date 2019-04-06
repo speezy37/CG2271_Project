@@ -108,7 +108,6 @@ void tGreenLED(void *p) {
 				digitalWrite(PIN_GLED7, HIGH);
 				digitalWrite(PIN_GLED8, HIGH);
 				vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_SLOW);
-
 			}
 		}
 		else {
@@ -151,21 +150,16 @@ void tSerial(void *p) {
 	TickType_t xLastWakeTime = 0;
 	while(1) {
         if (Serial.available()) {	//if there is data being received
-        	if((btState == Disconnected) && (moveState == End)) {
-        		btState = Connected;
-        	}
 			char val = Serial.read();
 			switch(val) {
 			case CMD_CONNECTED:
-				btState = Connected;
-				moveState = Start;
+				moveState = Connect;
 				break;
 			case CMD_OFF:
 				moveState = End;
 				break;
 			case CMD_SONG:
-				break;
-			case CMD_EMPTY:
+			    moveState = Start;
 				break;
 			case CMD_FORWARD:
 				moveState = Forward;
@@ -255,35 +249,35 @@ void tAudio(void *p) {
 		392, 392, 370};
 
 	while(1) {
-		/*if (btState == Connected) {
-			if (moveState == Start) {
-				for(int i = 0; i < 3; i++){
-					tone(PIN_AUDIO, specialTuneBT[i]);
-					vTaskDelayUntil(&xLastWakeTime, 300);
-					noTone(PIN_AUDIO);
-					vTaskDelayUntil(&xLastWakeTime, 100);
-					moveState = Idle;
-				}
-			}
-			else if (moveState == End) {
-				for(int i = 0; i < 3; i++){
-					tone(PIN_AUDIO, specialTuneEnd[i]);
-					vTaskDelayUntil(&xLastWakeTime, 300);
-					noTone(PIN_AUDIO);
-					vTaskDelayUntil(&xLastWakeTime, 100);
-					btState = Disconnected;
-				}
-			}
-			else {*/
-				for(int i = 0; i < 30; i++) {
-					tone(PIN_AUDIO, babyShark[i]);
-					vTaskDelayUntil(&xLastWakeTime, 140);
-					noTone(PIN_AUDIO);
-					vTaskDelayUntil(&xLastWakeTime, 60);
-				}
-				vTaskDelayUntil(&xLastWakeTime, 400);
-			//}
-		//}
+        if (moveState == Connect){
+            for(int i = 0; i < 3; i++){
+                tone(PIN_AUDIO, specialTuneBT[i]);
+                vTaskDelayUntil(&xLastWakeTime, 300);
+                noTone(PIN_AUDIO);
+                vTaskDelayUntil(&xLastWakeTime, 100);
+            }
+        }
+        else if (moveState == End){
+            for(int i = 0; i < 3; i++){
+                tone(PIN_AUDIO, specialTuneEnd[i]);
+                vTaskDelayUntil(&xLastWakeTime, 300);
+                noTone(PIN_AUDIO);
+                vTaskDelayUntil(&xLastWakeTime, 100);
+            }
+            songState = 0;
+        }
+        else if (moveState == Start || songState == 1){
+            if (songState == 0){
+                songState = 1;
+            }
+            for(int i = 0; i < 30; i++) {
+                tone(PIN_AUDIO, babyShark[i]);
+                vTaskDelayUntil(&xLastWakeTime, 140);
+                noTone(PIN_AUDIO);
+                vTaskDelayUntil(&xLastWakeTime, 60);
+            }
+        }
+        vTaskDelayUntil(&xLastWakeTime, 400);
 	}
 }
 

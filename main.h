@@ -47,7 +47,6 @@
 #define CMD_CONNECTED 'c'
 #define CMD_OFF 'f'
 #define CMD_SONG 'b'
-#define CMD_EMPTY 'e'
 #define CMD_LEFT 'L'
 #define CMD_RIGHT 'R'
 #define CMD_FORWARD 'F'
@@ -60,8 +59,9 @@
 #define PERIOD_LED_RUNNING	100
 #define PEIROD_SONG			50
 
-enum state {Forward, Reverse, Left, Right, Idle, End, Start};
+enum state {Forward, Reverse, Left, Right, Idle, End, Start, Connect};
 state moveState = End;
+int songState = 0;
 
 enum bluetooth {Disconnected, Connected};
 bluetooth btState = Disconnected;
