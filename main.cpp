@@ -19,12 +19,7 @@ void setup() {
 }
 
 void loop() {
-    xTaskCreate(TaskRedLED, "redLED", STACK_SIZE, NULL, 2, NULL);
-//  xTaskCreate(TaskGreenLED(), "greenLED", STACK_SIZE, NULL, 2, NULL);
-	xTaskCreate(TaskAudio, "Audio", STACK_SIZE, NULL, 2, NULL);
-	xTaskCreate(TaskSerial, "Serial", STACK_SIZE, NULL, 2, NULL);
-	xTaskCreate(TaskMotor, "Motor", STACK_SIZE, NULL, 2, NULL);
-	vTaskStartScheduler();
+
 }
 
 void initPins() {
