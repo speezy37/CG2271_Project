@@ -8,7 +8,7 @@
 #include "main.h"
 
 void setup() {
-    initPins();
+	initPins();
 	Serial.begin(9600);
 	xTaskCreate(tRedLED, "Red LED", STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate(tGreenLED, "Green LED", STACK_SIZE, NULL, 1, NULL);
@@ -38,7 +38,6 @@ void initPins() {
 	pinMode(PIN_GLED6, OUTPUT);
 	pinMode(PIN_GLED7, OUTPUT);
 	pinMode(PIN_GLED8, OUTPUT);
-
 	digitalWrite(PIN_RLED, HIGH);
 	digitalWrite(PIN_GLED1, HIGH);
 	digitalWrite(PIN_GLED2, HIGH);
