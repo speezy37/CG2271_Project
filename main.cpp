@@ -239,8 +239,16 @@ void tSerial(void *p) {
 			case CMD_LEFT:
 				moveState = Left;
 				break;
+			case CMD_LEFTFRONT:
+				break;
+			case CMD_LEFTBACK:
+				break;
 			case CMD_RIGHT:
 				moveState = Right;
+				break;
+			case CMD_RIGHTFRONT:
+				break;
+			case CMD_RIGHTBACK:
 				break;
 			case CMD_STOP:
 				moveState = Idle;
@@ -311,13 +319,18 @@ void tMotorControl(void *p) {
 
 void tAudio(void *p) {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
-    int specialTuneBT[3] = {261, 294, 330};
-	int specialTuneEnd[3] = {330, 294, 261};
+//  int specialTuneBT[3] = {261, 294, 330};
+//	int specialTuneEnd[3] = {330, 294, 261};
 	int babyShark[30] = {
 	    294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		392, 392, 370};
+	int delayBabyShark[30] = {
+		1000, 1000, 500, 500, 500, 250, 250, 250, 250,
+		500, 500, 500, 500, 500, 250, 250, 250, 250,
+		500, 500, 500, 500, 500, 250, 250, 250, 250,
+		500, 500, 2000};
 
 	while(1) {
 		if (moveState == Connect) {
@@ -341,7 +354,7 @@ void tAudio(void *p) {
 					break;
 				}
 				tone(PIN_AUDIO, babyShark[i]);
-				vTaskDelayUntil(&xLastWakeTime, 175);
+				vTaskDelayUntil(&xLastWakeTime, delayBabyShark[i]);
 				noTone(PIN_AUDIO);
 				vTaskDelayUntil(&xLastWakeTime, 75);
 			}
