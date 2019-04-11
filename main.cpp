@@ -130,7 +130,7 @@ void tGreenLED(void *p) {
 				digitalWrite(PIN_GLED8, HIGH);
 				vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_SLOW);
 			}
-			moveState = Idle;
+//			moveState = Idle;
 		}
 		else {
 			digitalWrite(PIN_GLED1, LOW);
@@ -220,15 +220,13 @@ void tSerial(void *p) {
 	TickType_t xLastWakeTime = 0;
 	while(1) {
         if (Serial.available()) {	//if there is data being received
-			char val = Serial.read();
-			switch(val) {
+			bluetoothVal = Serial.read();
+			switch(bluetoothVal) {
 			case CMD_CONNECTED:
 				moveState = Connect;
 				break;
 			case CMD_OFF:
 				moveState = Disconnect;
-				break;
-			case CMD_SONG:
 				break;
 			case CMD_FORWARD:
 				moveState = Forward;
@@ -250,6 +248,7 @@ void tSerial(void *p) {
 				break;
 			case CMD_RIGHTBACK:
 				break;
+			case CMD_SONG:
 			case CMD_STOP:
 				moveState = Idle;
 				break;
@@ -322,24 +321,32 @@ void tAudio(void *p) {
 //  int specialTuneBT[3] = {261, 294, 330};
 //	int specialTuneEnd[3] = {330, 294, 261};
 	int babyShark[30] = {
-	    294, 330, 392, 392, 392, 392, 392, 392, 392,
+		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		392, 392, 370};
-	int delayBabyShark[30] = {
-		1000, 1000, 500, 500, 500, 250, 250, 250, 250,
-		500, 500, 500, 500, 500, 250, 250, 250, 250,
-		500, 500, 500, 500, 500, 250, 250, 250, 250,
-		500, 500, 2000};
+	int babyShark1[30] = {
+		294, 330, 392, 392, 392, 392, 392, 392, 392,
+		294, 330, 392, 392, 392, 392, 392, 392, 392,
+		294, 330, 392, 392, 392, 392, 392, 392, 392,
+		392, 392, 370};
+//	int delayBabyShark[30] = {
+//		1000, 1000, 500, 500, 500, 250, 250, 250, 250,
+//		500, 500, 500, 500, 500, 250, 250, 250, 250,
+//		500, 500, 500, 500, 500, 250, 250, 250, 250,
+//		500, 500, 2000};
 
 	while(1) {
 		if (moveState == Connect) {
+//			Serial.println(bluetoothVal);
 			tone(PIN_AUDIO, 2637);
 			vTaskDelayUntil(&xLastWakeTime, 150);
 			noTone(PIN_AUDIO);
 			vTaskDelayUntil(&xLastWakeTime, 300);
+			moveState = End;
 		}
 		else if (moveState == Disconnect) {
+//			Serial.println(bluetoothVal);
 			for(int i=0; i<3; i++) {
 				tone(PIN_AUDIO, 2637);
 				vTaskDelayUntil(&xLastWakeTime, 150);
@@ -349,12 +356,14 @@ void tAudio(void *p) {
 			moveState = End;
 		}
 		else if ((moveState != Start) && (moveState != End)) {
+//			Serial.println(bluetoothVal);
+//			Serial.println(moveState);
 			for(int i = 0; i < 30; i++) {
 				if ((moveState == Connect) || (moveState == Disconnect)) {
 					break;
 				}
 				tone(PIN_AUDIO, babyShark[i]);
-				vTaskDelayUntil(&xLastWakeTime, delayBabyShark[i]);
+				vTaskDelayUntil(&xLastWakeTime, babyShark1[i]);
 				noTone(PIN_AUDIO);
 				vTaskDelayUntil(&xLastWakeTime, 75);
 			}

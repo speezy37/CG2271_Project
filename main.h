@@ -66,6 +66,8 @@
 enum state {Start, Connect, Idle, Forward, Reverse, Left, Right, LeftFront, RightFront, LeftBack, RightBack, Disconnect, End};
 state moveState = Start;
 
+char bluetoothVal;
+
 void initPins(void);
 void tRedLED(void *p);
 void tGreenLED(void *p);
