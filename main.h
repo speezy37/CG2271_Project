@@ -52,6 +52,10 @@
 #define CMD_FORWARD 'F'
 #define CMD_REVERSE 'B'
 #define CMD_STOP 'S'
+#define CMD_LEFTFRONT 'H'
+#define CMD_LEFTBACK 'I'
+#define CMD_RIGHTFRONT 'J'
+#define CMD_RIGHTBACK 'K'
 
 // timings
 #define PERIOD_LED_SLOW		250
@@ -59,8 +63,10 @@
 #define PERIOD_LED_RUNNING	100
 #define PEIROD_SONG			50
 
-enum state {Start, Connect, Idle, Forward, Reverse, Left, Right, Disconnect, End};
+enum state {Start, Connect, Idle, Forward, Reverse, Left, Right, LeftFront, RightFront, LeftBack, RightBack, Disconnect, End};
 state moveState = Start;
+
+char bluetoothVal;
 
 void initPins(void);
 void tRedLED(void *p);
