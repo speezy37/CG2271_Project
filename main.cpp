@@ -220,7 +220,7 @@ void tSerial(void *p) {
 	TickType_t xLastWakeTime = 0;
 	while(1) {
         if (Serial.available()) {	//if there is data being received
-			bluetoothVal = Serial.read();
+			char bluetoothVal = Serial.read();
 			switch(bluetoothVal) {
 			case CMD_CONNECTED:
 				moveState = Connect;
@@ -238,15 +238,19 @@ void tSerial(void *p) {
 				moveState = Left;
 				break;
 			case CMD_LEFTFRONT:
+				moveState = LeftFront;
 				break;
 			case CMD_LEFTBACK:
+				moveState = LeftBack;
 				break;
 			case CMD_RIGHT:
 				moveState = Right;
 				break;
 			case CMD_RIGHTFRONT:
+				moveState = RightFront;
 				break;
 			case CMD_RIGHTBACK:
+				moveState = RightBack;
 				break;
 			case CMD_SONG:
 			case CMD_STOP:
@@ -302,6 +306,46 @@ void tMotorControl(void *p) {
 			digitalWrite(PIN_MOTORBLP, HIGH);
 			digitalWrite(PIN_MOTORBLN, LOW);
 			break;
+		case LeftFront:
+			digitalWrite(PIN_MOTORFRP, HIGH);
+			digitalWrite(PIN_MOTORFRN, LOW);
+			analogWrite(PIN_MOTORFLP, POS_PWM);
+			digitalWrite(PIN_MOTORFLN, LOW);
+			digitalWrite(PIN_MOTORBRP, HIGH);
+			digitalWrite(PIN_MOTORBRN, LOW);
+			analogWrite(PIN_MOTORBLP, POS_PWM);
+			digitalWrite(PIN_MOTORBLN, LOW);
+			break;
+		case RightFront:
+			analogWrite(PIN_MOTORFRP, POS_PWM);
+			digitalWrite(PIN_MOTORFRN, LOW);
+			digitalWrite(PIN_MOTORFLP, HIGH);
+			digitalWrite(PIN_MOTORFLN, LOW);
+			analogWrite(PIN_MOTORBRP, POS_PWM);
+			digitalWrite(PIN_MOTORBRN, LOW);
+			digitalWrite(PIN_MOTORBLP, HIGH);
+			digitalWrite(PIN_MOTORBLN, LOW);
+			break;
+		case LeftBack:
+			digitalWrite(PIN_MOTORFRP, LOW);
+			digitalWrite(PIN_MOTORFRN, HIGH);
+			analogWrite(PIN_MOTORFLP, POS_PWM);
+			digitalWrite(PIN_MOTORFLN, HIGH);
+			digitalWrite(PIN_MOTORBRP, LOW);
+			digitalWrite(PIN_MOTORBRN, HIGH);
+			analogWrite(PIN_MOTORBLP, POS_PWM);
+			digitalWrite(PIN_MOTORBLN, HIGH);
+			break;
+		case RightBack:
+			analogWrite(PIN_MOTORFRP, POS_PWM);
+			digitalWrite(PIN_MOTORFRN, HIGH);
+			digitalWrite(PIN_MOTORFLP, LOW);
+			digitalWrite(PIN_MOTORFLN, HIGH);
+			analogWrite(PIN_MOTORBRP, POS_PWM);
+			digitalWrite(PIN_MOTORBRN, HIGH);
+			digitalWrite(PIN_MOTORBLP, LOW);
+			digitalWrite(PIN_MOTORBLN, HIGH);
+			break;
 		default:
 			digitalWrite(PIN_MOTORFRP, LOW);
 			digitalWrite(PIN_MOTORFRN, LOW);
@@ -318,27 +362,15 @@ void tMotorControl(void *p) {
 
 void tAudio(void *p) {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
-//  int specialTuneBT[3] = {261, 294, 330};
-//	int specialTuneEnd[3] = {330, 294, 261};
+
 	int babyShark[30] = {
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		392, 392, 370};
-	int babyShark1[30] = {
-		294, 330, 392, 392, 392, 392, 392, 392, 392,
-		294, 330, 392, 392, 392, 392, 392, 392, 392,
-		294, 330, 392, 392, 392, 392, 392, 392, 392,
-		392, 392, 370};
-//	int delayBabyShark[30] = {
-//		1000, 1000, 500, 500, 500, 250, 250, 250, 250,
-//		500, 500, 500, 500, 500, 250, 250, 250, 250,
-//		500, 500, 500, 500, 500, 250, 250, 250, 250,
-//		500, 500, 2000};
 
 	while(1) {
 		if (moveState == Connect) {
-//			Serial.println(bluetoothVal);
 			tone(PIN_AUDIO, 2637);
 			vTaskDelayUntil(&xLastWakeTime, 150);
 			noTone(PIN_AUDIO);
@@ -356,14 +388,12 @@ void tAudio(void *p) {
 			moveState = End;
 		}
 		else if ((moveState != Start) && (moveState != End)) {
-//			Serial.println(bluetoothVal);
-//			Serial.println(moveState);
 			for(int i = 0; i < 30; i++) {
 				if ((moveState == Connect) || (moveState == Disconnect)) {
 					break;
 				}
 				tone(PIN_AUDIO, babyShark[i]);
-				vTaskDelayUntil(&xLastWakeTime, babyShark1[i]);
+				vTaskDelayUntil(&xLastWakeTime, 225);
 				noTone(PIN_AUDIO);
 				vTaskDelayUntil(&xLastWakeTime, 75);
 			}
