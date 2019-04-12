@@ -15,6 +15,7 @@
 #include <semphr.h>
 
 #define STACK_SIZE 200
+#define POS_PWM   32
 
 // LEDs
 #define PIN_RLED	A1
@@ -25,17 +26,17 @@
 #define PIN_GLED5	A0
 #define PIN_GLED6	2
 #define PIN_GLED7	4
-#define PIN_GLED8	5
+#define PIN_GLED8	11
 
 // Motor
-#define PIN_MOTORFRP	10
-#define PIN_MOTORFRN	11
-#define PIN_MOTORFLP	12
+#define PIN_MOTORFRP	10	// PWM
+#define PIN_MOTORFRN	12
+#define PIN_MOTORFLP	5	// PWM
 #define PIN_MOTORFLN	13
-#define PIN_MOTORBRP	8
-#define PIN_MOTORBRN	9
-#define PIN_MOTORBLP	7
-#define PIN_MOTORBLN	6
+#define PIN_MOTORBRP	9	// PWM
+#define PIN_MOTORBRN	8
+#define PIN_MOTORBLP	6	// PWM
+#define PIN_MOTORBLN	7
 
 // Buzzer
 #define PIN_AUDIO   3
