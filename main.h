@@ -69,7 +69,7 @@ enum state {Start, Connect, Idle, Forward, Reverse, Left, Right, LeftFront, Righ
 state moveState = Disconnect;
 
 char bluetoothVal;
-int song = 0;
+int challengeRun = 0;
 
 void initPins(void);
 void tRedLED(void *p);

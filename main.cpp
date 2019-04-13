@@ -387,7 +387,7 @@ void tAudio(void *p) {
 			moveState = Idle;
 		}
 		else if (moveState == Disconnect)
-			song = 0;
+			challengeRun = 0;
 		else if (moveState == End) {
 			for(int i=0; i<3; i++) {
 				tone(PIN_AUDIO, 2637);
@@ -395,11 +395,11 @@ void tAudio(void *p) {
 				noTone(PIN_AUDIO);
 				vTaskDelayUntil(&xLastWakeTime, 350);
 			}
-			song = 0;
+			challengeRun = 0;
 			moveState = Idle;
 		}
-		else if ((song == 1 || moveState == Start) && (moveState != Connect) && (moveState != End)) {
-			song = 1;
+		else if ((challengeRun == 1 || moveState == Start) && (moveState != Connect) && (moveState != End)) {
+			challengeRun = 1;
 			for(int i = 0; i < 30; i++) {
 				if (moveState == End || moveState == Disconnect) {
 					break;
