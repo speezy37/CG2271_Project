@@ -12,9 +12,9 @@ void setup() {
 	Serial.begin(9600);
 	xTaskCreate(tRedLED, "Red LED", STACK_SIZE, NULL, 1, NULL);
 	xTaskCreate(tGreenLED, "Green LED", STACK_SIZE, NULL, 1, NULL);
+	xTaskCreate(tMotorControl, "Motor Control", STACK_SIZE, NULL, 2, NULL);
 	xTaskCreate(tAudio, "Audio", STACK_SIZE, NULL, 3, NULL);
 	xTaskCreate(tSerial, "Serial", STACK_SIZE, NULL, 4, NULL);
-	xTaskCreate(tMotorControl, "Motor Control", STACK_SIZE, NULL, 2, NULL);
 	vTaskStartScheduler();
 }
 
@@ -62,12 +62,12 @@ void tRedLED(void *p) {
 	TickType_t period;
 
 	while(1) {
-		if ((moveState == Start) || (moveState == End) || (moveState == Connect) || (moveState == Disconnect)) {
+		if (moveState == Disconnect) {
 			digitalWrite(PIN_RLED, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 		}
 		else {
-			if (moveState == Idle) {
+			if ((moveState == Idle) || (moveState == Start) || (moveState == End) || (moveState == Connect)) {
 				period = PERIOD_LED_SLOW;
 			}
 			else {
@@ -86,7 +86,7 @@ void tGreenLED(void *p) {
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 
 	while (1) {
-		if((moveState == Start) || (moveState == Disconnect) || (moveState == End)) {
+		if(moveState == Disconnect) {
 			digitalWrite(PIN_GLED1, HIGH);
 			digitalWrite(PIN_GLED2, HIGH);
 			digitalWrite(PIN_GLED3, HIGH);
@@ -97,7 +97,7 @@ void tGreenLED(void *p) {
 			digitalWrite(PIN_GLED8, HIGH);
 			vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_RUNNING);
 		}
-		else if (moveState == Idle) {
+		else if ((moveState == Idle) || (moveState == Start) || (moveState == End)) {
 			digitalWrite(PIN_GLED1, LOW);
 			digitalWrite(PIN_GLED2, LOW);
 			digitalWrite(PIN_GLED3, LOW);
@@ -130,7 +130,6 @@ void tGreenLED(void *p) {
 				digitalWrite(PIN_GLED8, HIGH);
 				vTaskDelayUntil(&xLastWakeTime, PERIOD_LED_SLOW);
 			}
-//			moveState = Idle;
 		}
 		else {
 			digitalWrite(PIN_GLED1, LOW);
@@ -226,8 +225,11 @@ void tSerial(void *p) {
 			case CMD_CONNECTED:
 				moveState = Connect;
 				break;
-			case CMD_OFF:
+			case CMD_DISCONNECTED:
 				moveState = Disconnect;
+				break;
+			case CMD_OFF:
+				moveState = End;
 				break;
 			case CMD_FORWARD:
 				moveState = Forward;
@@ -254,6 +256,8 @@ void tSerial(void *p) {
 				moveState = RightBack;
 				break;
 			case CMD_SONG:
+				moveState = Start;
+				break;
 			case CMD_STOP:
 				moveState = Idle;
 				break;
@@ -368,45 +372,40 @@ void tAudio(void *p) {
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		392, 392, 370};
-	int babyShark1[30] = {
+	int babySharkDelay[30] = {
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		294, 330, 392, 392, 392, 392, 392, 392, 392,
 		392, 392, 370};
-//	int delayBabyShark[30] = {
-//		1000, 1000, 500, 500, 500, 250, 250, 250, 250,
-//		500, 500, 500, 500, 500, 250, 250, 250, 250,
-//		500, 500, 500, 500, 500, 250, 250, 250, 250,
-//		500, 500, 2000};
 
 	while(1) {
 		if (moveState == Connect) {
-//			Serial.println(bluetoothVal);
 			tone(PIN_AUDIO, 2637);
 			vTaskDelayUntil(&xLastWakeTime, 150);
 			noTone(PIN_AUDIO);
 			vTaskDelayUntil(&xLastWakeTime, 300);
-			moveState = End;
+			moveState = Idle;
 		}
-		else if (moveState == Disconnect) {
-//			Serial.println(bluetoothVal);
+		else if (moveState == Disconnect)
+			song = 0;
+		else if (moveState == End) {
 			for(int i=0; i<3; i++) {
 				tone(PIN_AUDIO, 2637);
 				vTaskDelayUntil(&xLastWakeTime, 150);
 				noTone(PIN_AUDIO);
 				vTaskDelayUntil(&xLastWakeTime, 350);
 			}
-			moveState = End;
+			song = 0;
+			moveState = Idle;
 		}
-		else if ((moveState != Start) && (moveState != End)) {
-//			Serial.println(bluetoothVal);
-//			Serial.println(moveState);
+		else if ((song == 1 || moveState == Start) && (moveState != Connect) && (moveState != End)) {
+			song = 1;
 			for(int i = 0; i < 30; i++) {
-				if ((moveState == Connect) || (moveState == Disconnect)) {
+				if (moveState == End || moveState == Disconnect) {
 					break;
 				}
 				tone(PIN_AUDIO, babyShark[i]);
-				vTaskDelayUntil(&xLastWakeTime, babyShark1[i]);
+				vTaskDelayUntil(&xLastWakeTime, babySharkDelay[i]);
 				noTone(PIN_AUDIO);
 				vTaskDelayUntil(&xLastWakeTime, 75);
 			}
