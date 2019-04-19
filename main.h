@@ -46,6 +46,7 @@
 
 // Bluetooth
 #define CMD_CONNECTED 'c'
+#define CMD_DISCONNECTED 'd'
 #define CMD_OFF 'f'
 #define CMD_SONG 'b'
 #define CMD_LEFT 'L'
@@ -65,7 +66,10 @@
 #define PEIROD_SONG			50
 
 enum state {Start, Connect, Idle, Forward, Reverse, Left, Right, LeftFront, RightFront, LeftBack, RightBack, Disconnect, End};
-state moveState = Start;
+state moveState = Disconnect;
+
+char bluetoothVal;
+int challengeRun = 0;
 
 void initPins(void);
 void tRedLED(void *p);
